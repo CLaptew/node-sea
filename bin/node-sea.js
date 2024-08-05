@@ -8,7 +8,7 @@ import { join, dirname, resolve, basename, normalize } from "path";
 import { fileURLToPath } from 'url';
 import sea from "../lib/index.js";
 import debug from 'debug';
-import { is_directory_exists, is_file_exists } from "../lib/utils.js";
+import { is_directory_exists, is_file_exists, get_current_platform } from "../lib/utils.js";
 import { homedir, version } from "os";
 import { existsSync, readdirSync, statSync } from "fs";
 import Table from 'cli-table3';
@@ -17,19 +17,6 @@ const log = debug('app');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-function get_current_platform() {
-  switch (process.platform) {
-    case "win32":
-      return "windows";
-    case "darwin":
-      return "macos";
-    case "linux":
-      return "linux";
-    default:
-      return "unknown"
-  }
-}
 
 async function listPrebuildNode(available) {
   // each version of platform binary is like node-linux-x64-v20.11.0-with-intl-full-icu, node-linux-x64-v20.11.0-with-intl-none, node-linux-x64-v20.11.0-with-intl-small-icu
@@ -115,6 +102,7 @@ async function main() {
     .option("--no-use-system-node", "Use system node")
     .option("-v, --node-version <version>", "Node version for create SEA", 'v20.11.0')
     .option("-a, --arch <arch>", "Node arch for create SEA", 'x64')
+    .option("-p, --platform <platform>", "Node platform, accept values: linux, windows", 'linux')
     .option("-i, --with-intl <intl>", "Node intl feature, accept values: none, small-icu, full-icu", 'small-icu')
     .action((_options) => {
       log('default command options', options);
@@ -153,12 +141,12 @@ async function main() {
   const filename = basename(options.build.entry);
   let output = options.build.output;
   if (!options.build.output) {
-    output = join(dirname(options.build.entry), `${filename.substring(0, filename.lastIndexOf('.'))}${process.platform === "win32" ? ".exe" : ""}`);
+    output = join(dirname(options.build.entry), `${filename.substring(0, filename.lastIndexOf('.'))}${options.build.platform === "windows" ? ".exe" : ""}`);
     console.info(chalk.yellow(`Output path not specified, save single executable to ${output}`));
   }
   // Check if output is a directory and exists, if so, append the entry filename and executable extension
   if (await is_directory_exists(options.build.output)) {
-    output = join(options.build.output, `${filename.substring(0, filename.lastIndexOf('.'))}${process.platform === "win32" ? ".exe" : ""}`);
+    output = join(options.build.output, `${filename.substring(0, filename.lastIndexOf('.'))}${options.build.platform === "windows" ? ".exe" : ""}`);
     console.info(chalk.yellow(`Output path is a directory, save single executable to ${output}`));
   }
   options.build.output = resolve(process.cwd(), output);
@@ -170,6 +158,7 @@ async function main() {
     nodeVersion: options.build.nodeVersion,
     withIntl: options.build.withIntl,
     arch: options.build.arch,
+    platform: options.build.platform,
   })
 }
 

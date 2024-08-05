@@ -1,6 +1,6 @@
 {
-  "name": "@liudonghua123/node-sea",
-  "version": "0.1.8",
+  "name": "@claptew/node-sea",
+  "version": "0.1.9",
   "description": "It's a simple tool which build js as a single executable for easy deploying.",
   "keywords": [
     "node",
@@ -12,9 +12,9 @@
     "terminal",
     "utility"
   ],
-  "homepage": "https://github.com/liudonghua123/node-sea",
+  "homepage": "https://github.com/claptew/node-sea",
   "bugs": {
-    "url": "https://github.com/liudonghua123/node-sea/issues",
+    "url": "https://github.com/claptew/node-sea/issues",
     "email": "liudonghua123@gmail.com"
   },
   "license": "MIT",
@@ -23,7 +23,7 @@
     "node-sea": "bin/node-sea.js"
   },
   "type": "module",
-  "repository": "git@github.com:liudonghua123/node-sea.git",
+  "repository": "git@github.com:claptew/node-sea.git",
   "author": "liudonghua123 <liudonghua123@gmail.com>",
   "scripts": {
     "start": "node --no-warnings=ExperimentalWarning bin/node-sea.js"
